@@ -1,6 +1,6 @@
   /* Customizing the navbar color */
   .navbar-custom {
-    background-image: linear-gradient(to right, #92979d, #8fedfa); /* Blue gradient */
+    background-image: linear-gradient(to right, #e2c4ae, #8fedfa); /* Blue gradient */
   }
 
   /* Customizing the navbar link color */
@@ -10,14 +10,13 @@
 
   /* Customizing the main content text color */
   body {
-    color: #333; /* Dark gray color */
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
   }
-  
-  .search-bar {
-    float: left;
-    margin-right: 20px;
-  }
-
-  .previous-searches {
-    float: left;
+  .footer {
+    background-color: #f5f5f5;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
   }
