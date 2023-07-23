@@ -1,22 +1,22 @@
-  /* Customizing the navbar color */
-  .navbar-custom {
-    background-image: linear-gradient(to right, #e2c4ae, #8fedfa); /* Blue gradient */
-  }
+/* Customizing the navbar color */
+.navbar-custom {
+  background-image: linear-gradient(to right, #e2c4ae, #8fedfa);
+}
 
-  /* Customizing the navbar link color */
-  .navbar-custom .nav-link {
-    color: black; /* White color */
-  }
+.navbar-custom .nav-link {
+  color: black;
+  /* White color */
+}
 
-  /* Customizing the main content text color */
-  body {
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
-  }
-  .footer {
-    background-color: #f5f5f5;
-    position: fixed;
-    bottom: 0;
-    width: 100%;
-  }
+body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.footer {
+  background-color: #f5f5f5;
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+}
