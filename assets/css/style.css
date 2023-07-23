@@ -1,0 +1,14 @@
+  /* Customizing the navbar color */
+  .navbar-custom {
+    background-image: linear-gradient(to right, #92979d, #8fedfa); /* Blue gradient */
+  }
+
+  /* Customizing the navbar link color */
+  .navbar-custom .nav-link {
+    color: black; /* White color */
+  }
+
+  /* Customizing the main content text color */
+  body {
+    color: #333; /* Dark gray color */
+  }
