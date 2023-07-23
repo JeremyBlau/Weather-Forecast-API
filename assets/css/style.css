@@ -12,3 +12,12 @@
   body {
     color: #333; /* Dark gray color */
   }
+  
+  .search-bar {
+    float: left;
+    margin-right: 20px;
+  }
+
+  .previous-searches {
+    float: left;
+  }
