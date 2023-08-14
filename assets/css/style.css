@@ -35,3 +35,38 @@ body {
   padding: 10px;
   text-align: center;
 }
+
+#search-history li {
+  list-style: none; /* Remove default list bullet */
+  margin: 5px 0; /* Add spacing between buttons */
+  display: inline-block;
+}
+
+#search-history li a {
+  display: inline-block;
+  padding: 5px 10px;
+  background-color: lightblue;
+  border-radius: 20px;
+  text-decoration: none;
+  color: black;
+  opacity: 1;
+  transition: opacity 0.3s ease-in-out;
+}
+
+#search-history li a:hover {
+  opacity: 0.8;
+}
+
+.previous_searches .previous-search-button {
+  display: inline-block;
+  padding: 5px 10px;
+  background-color: lightblue;
+  border-radius: 20px;
+  text-decoration: none;
+  color: black;
+  transition: opacity 0.3s ease-in-out;
+}
+
+.previous_searches .previous-search-button:hover {
+  opacity: 0.8;
+}

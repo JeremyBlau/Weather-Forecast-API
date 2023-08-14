@@ -85,8 +85,9 @@ function displayForecastWeather(forecastData) {
   }
 }
 
-// Function to add the city to the search history
+// Function to add the city to the search history and local storage
 const maxSearchHistoryItems = 5;
+
 function addToSearchHistory(city) {
   const searchHistoryElement = document.getElementById("search-history");
   const searchItems = searchHistoryElement.querySelectorAll("li");
@@ -107,12 +108,40 @@ function addToSearchHistory(city) {
     searchItem.addEventListener("click", function () {
       getWeatherData(city);
     });
+
+    // Store the search history in local storage
+    const storedHistory = localStorage.getItem("weatherSearchHistory");
+    const historyArray = storedHistory ? JSON.parse(storedHistory) : [];
+    historyArray.push(city);
+    localStorage.setItem("weatherSearchHistory", JSON.stringify(historyArray));
   }
+}
+
+// Function to retrieve and display search history from local storage
+function displaySearchHistory() {
+  const searchHistoryElement = document.getElementById("search-history");
+  const storedHistory = localStorage.getItem("weatherSearchHistory");
+  const historyArray = storedHistory ? JSON.parse(storedHistory) : [];
+
+  // Clear existing search history
+  searchHistoryElement.innerHTML = '';
+
+  // Display search history items
+  historyArray.forEach(city => {
+    const searchItem = document.createElement("li");
+    searchItem.textContent = city;
+    searchHistoryElement.appendChild(searchItem);
+
+    searchItem.addEventListener("click", function () {
+      getWeatherData(city);
+    });
+  });
 }
 
 // Example usage: Call the function with specific city name
 // You can replace "New York" with any other city name you want to query
 getWeatherData("New York");
+displaySearchHistory(); // Display search history when page loads
 
 // Add event listener to the search form
 const searchForm = document.getElementById("search-form");
