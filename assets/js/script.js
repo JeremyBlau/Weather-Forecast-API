@@ -27,18 +27,22 @@ function displayWeatherData(data) {
   const cityName = data.name;
   const date = new Date(data.dt * 1000).toLocaleDateString();
   const icon = data.weather[0].icon;
-  const temperature = data.main.temp;
+
+  // Convert Kelvin to Fahrenheit
+  const temperatureInKelvin = data.main.temp;
+  const temperatureInFahrenheit = (temperatureInKelvin - 273.15) * 9/5 + 32;
+
   const humidity = data.main.humidity;
   const windSpeed = data.wind.speed;
 
   const iconUrl = `http://openweathermap.org/img/w/${icon}.png`;
   const weatherHTML = `
-  <h2>${cityName} (${date})</h2>
-  <p>Temperature: ${temperature} °F</p>
-  <p>Humidity: ${humidity}%</p>
-  <p>Wind Speed: ${windSpeed} mph</p>
-  <img src="${iconUrl}" alt="Weather Icon">
-`;
+    <h2>${cityName} (${date})</h2>
+    <p>Temperature: ${temperatureInFahrenheit.toFixed(2)} °F</p>
+    <p>Humidity: ${humidity}%</p>
+    <p>Wind Speed: ${windSpeed} mph</p>
+    <img src="${iconUrl}" alt="Weather Icon">
+  `;
 
   weatherDataElement.innerHTML = weatherHTML;
 }
