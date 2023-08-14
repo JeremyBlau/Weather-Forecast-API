@@ -7,6 +7,9 @@ function getWeatherData(city) {
   fetch(url)
     .then(response => response.json())
     .then(data => {
+      // Add this console log to see the data returned by the API
+      console.log("Weather Data:", data);
+
       // Process and display the weather data
       displayWeatherData(data);
       // Add the city to the search history
@@ -28,14 +31,15 @@ function displayWeatherData(data) {
   const humidity = data.main.humidity;
   const windSpeed = data.wind.speed;
 
+  const iconUrl = `http://openweathermap.org/img/w/${icon}.png`;
   const weatherHTML = `
-    <h2>${cityName} (${date})</h2>
-    <p>Temperature: ${temperature} °F</p>
-    <p>Humidity: ${humidity}%</p>
-    <p>Wind Speed: ${windSpeed} mph</p>
-    <!-- Add icon representation of weather conditions here -->
-  `;
-  
+  <h2>${cityName} (${date})</h2>
+  <p>Temperature: ${temperature} °F</p>
+  <p>Humidity: ${humidity}%</p>
+  <p>Wind Speed: ${windSpeed} mph</p>
+  <img src="${iconUrl}" alt="Weather Icon">
+`;
+
   weatherDataElement.innerHTML = weatherHTML;
 }
 
@@ -58,3 +62,28 @@ searchForm.addEventListener("submit", function (event) {
   const city = document.getElementById("search-input").value;
   getWeatherData(city);
 });
+
+const maxSearchHistoryItems = 5;
+
+function addToSearchHistory(city) {
+  const searchHistoryElement = document.getElementById("search-history");
+  const searchItems = searchHistoryElement.querySelectorAll("li");
+
+  // Check if the city is already in the search history
+  const existingItem = Array.from(searchItems).find(item => item.textContent === city);
+
+  if (!existingItem) {
+    const searchItem = document.createElement("li");
+    searchItem.textContent = city;
+
+    if (searchItems.length >= maxSearchHistoryItems) {
+      searchHistoryElement.removeChild(searchItems[0]); // Remove the oldest search
+    }
+
+    searchHistoryElement.appendChild(searchItem);
+    // Add a click event listener to the new search item to re-fetch data
+    searchItem.addEventListener("click", function () {
+      getWeatherData(city);
+    });
+  }
+}
