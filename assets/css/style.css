@@ -5,7 +5,6 @@
 
 .navbar-custom .nav-link {
   color: black;
-  /* White color */
 }
 
 body {
@@ -42,22 +41,8 @@ body {
   display: inline-block;
 }
 
-#search-history li a {
-  display: inline-block;
-  padding: 5px 10px;
-  background-color: lightblue;
-  border-radius: 20px;
-  text-decoration: none;
-  color: black;
-  opacity: 1;
-  transition: opacity 0.3s ease-in-out;
-}
-
-#search-history li a:hover {
-  opacity: 0.8;
-}
-
-.previous_searches .previous-search-button {
+#search-history li a,
+.previous-search-button { /* Apply styles to both the <a> and .previous-search-button elements */
   display: inline-block;
   padding: 5px 10px;
   background-color: lightblue;
@@ -67,6 +52,7 @@ body {
   transition: opacity 0.3s ease-in-out;
 }
 
-.previous_searches .previous-search-button:hover {
+#search-history li a:hover,
+.previous-search-button:hover {
   opacity: 0.8;
 }

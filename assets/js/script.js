@@ -92,8 +92,8 @@ function addToSearchHistory(city) {
   const searchHistoryElement = document.getElementById("search-history");
   const searchItems = searchHistoryElement.querySelectorAll("li");
 
-  // Check if the city is already in the search history
-  const existingItem = Array.from(searchItems).find(item => item.textContent === city);
+  // Check if a similar city (case-insensitive) is already in the search history
+  const existingItem = Array.from(searchItems).find(item => item.textContent.toLowerCase() === city.toLowerCase());
 
   if (!existingItem) {
     const searchItem = document.createElement("li");
@@ -112,8 +112,13 @@ function addToSearchHistory(city) {
     // Store the search history in local storage
     const storedHistory = localStorage.getItem("weatherSearchHistory");
     const historyArray = storedHistory ? JSON.parse(storedHistory) : [];
-    historyArray.push(city);
-    localStorage.setItem("weatherSearchHistory", JSON.stringify(historyArray));
+
+    // Check if a similar city (case-insensitive) is already in the history array
+    const existingHistoryItem = historyArray.find(item => item.toLowerCase() === city.toLowerCase());
+    if (!existingHistoryItem) {
+      historyArray.push(city);
+      localStorage.setItem("weatherSearchHistory", JSON.stringify(historyArray));
+    }
   }
 }
 
@@ -126,21 +131,25 @@ function displaySearchHistory() {
   // Clear existing search history
   searchHistoryElement.innerHTML = '';
 
-  // Display search history items
-  historyArray.forEach(city => {
+  // Display search history items (limit to a maximum of 5)
+  const displayCount = Math.min(historyArray.length, maxSearchHistoryItems);
+  for (let i = 0; i < displayCount; i++) {
+    const city = historyArray[i];
     const searchItem = document.createElement("li");
-    searchItem.textContent = city;
+    const searchButton = document.createElement("a");
+    searchButton.textContent = city;
+    searchButton.href = "#";
+    searchButton.classList.add("previous-search-button");
+    searchItem.appendChild(searchButton);
+
     searchHistoryElement.appendChild(searchItem);
 
-    searchItem.addEventListener("click", function () {
+    searchButton.addEventListener("click", function () {
       getWeatherData(city);
     });
-  });
+  }
 }
 
-// Example usage: Call the function with specific city name
-// You can replace "New York" with any other city name you want to query
-getWeatherData("New York");
 displaySearchHistory(); // Display search history when page loads
 
 // Add event listener to the search form
