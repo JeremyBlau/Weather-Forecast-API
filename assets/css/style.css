@@ -20,3 +20,18 @@ body {
   bottom: 0;
   width: 100%;
 }
+
+.forecast-data {
+  display: flex;
+  flex-wrap: nowrap; /* Prevent items from wrapping to a new row */
+  overflow-x: auto; /* Add horizontal scrolling for smaller screens */
+  padding: 10px;
+}
+
+.forecast-item {
+  flex: 0 0 auto; /* Prevent items from growing and shrinking */
+  margin-right: 10px; /* Add spacing between items */
+  border: 1px solid #ccc;
+  padding: 10px;
+  text-align: center;
+}

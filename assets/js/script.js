@@ -1,29 +1,37 @@
 const apiKey = "e5528239496e7faee40c0c1dd6ba8b30";
-const maxSearchHistoryItems = 5;
 
 // Function to make the API call and fetch weather data
 function getWeatherData(city) {
-  const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}`;
+  const currentWeatherUrl = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}`;
+  const forecastUrl = `https://api.openweathermap.org/data/2.5/forecast?q=${city}&appid=${apiKey}`;
 
-  fetch(url)
+  fetch(currentWeatherUrl)
     .then(response => response.json())
-    .then(data => {
-      // Add this console log to see the data returned by the API
-      console.log("Weather Data:", data);
+    .then(currentData => {
+      // Process and display the current weather data
+      displayCurrentWeather(currentData);
 
-      // Process and display the weather data
-      displayWeatherData(data);
+      // Fetch the 5-day forecast data
+      fetch(forecastUrl)
+        .then(response => response.json())
+        .then(forecastData => {
+          // Process and display the 5-day forecast data
+          displayForecastWeather(forecastData);
+        })
+        .catch(error => {
+          console.error("Error fetching forecast data:", error);
+        });
+
       // Add the city to the search history
       addToSearchHistory(city);
     })
     .catch(error => {
-      console.error("Error fetching weather data:", error);
+      console.error("Error fetching current weather data:", error);
     });
 }
 
-// Function to display weather data on the page
-function displayWeatherData(data) {
-  // This is just a basic example. You can customize the data display as needed.
+// Function to display current weather data on the page
+function displayCurrentWeather(data) {
   const weatherDataElement = document.getElementById("weather-data");
   const cityName = data.name;
   const date = new Date(data.dt * 1000).toLocaleDateString();
@@ -48,42 +56,63 @@ function displayWeatherData(data) {
   weatherDataElement.innerHTML = weatherHTML;
 }
 
-// Function to add the city to the search history
-function addToSearchHistory(city) {
-  const searchHistory = JSON.parse(localStorage.getItem("searchHistory")) || [];
+function displayForecastWeather(forecastData) {
+  const forecastDataElement = document.getElementById("forecast-data");
+  forecastDataElement.innerHTML = ''; // Clear previous entries
 
-  // Check if the city is already in the search history
-  const existingItem = searchHistory.find(item => item === city);
+  // Loop through the forecast data for the next 5 days
+  for (let i = 0; i < forecastData.list.length; i += 8) {
+    const forecastItem = forecastData.list[i];
+    const date = new Date(forecastItem.dt * 1000).toLocaleDateString();
+    const icon = forecastItem.weather[0].icon;
+    const temperature = forecastItem.main.temp;
+    const humidity = forecastItem.main.humidity;
+    const windSpeed = forecastItem.wind.speed;
 
-  if (!existingItem) {
-    searchHistory.push(city);
+    const iconUrl = `http://openweathermap.org/img/w/${icon}.png`;
 
-    if (searchHistory.length > maxSearchHistoryItems) {
-      searchHistory.shift(); // Remove the oldest search
-    }
+    const forecastHTML = `
+      <div class="forecast-item">
+        <h4>${date}</h4>
+        <p>Temperature: ${temperature} °F</p>
+        <p>Humidity: ${humidity}%</p>
+        <p>Wind Speed: ${windSpeed} mph</p>
+        <img src="${iconUrl}" alt="Weather Icon">
+      </div>
+    `;
 
-    localStorage.setItem("searchHistory", JSON.stringify(searchHistory));
-    displaySearchHistory(); // Update the search history UI
+    forecastDataElement.innerHTML += forecastHTML;
   }
 }
 
-// Function to display the search history on the page
-function displaySearchHistory() {
+// Function to add the city to the search history
+const maxSearchHistoryItems = 5;
+function addToSearchHistory(city) {
   const searchHistoryElement = document.getElementById("search-history");
-  searchHistoryElement.innerHTML = ""; // Clear previous content
+  const searchItems = searchHistoryElement.querySelectorAll("li");
 
-  const searchHistory = JSON.parse(localStorage.getItem("searchHistory")) || [];
+  // Check if the city is already in the search history
+  const existingItem = Array.from(searchItems).find(item => item.textContent === city);
 
-  searchHistory.forEach(city => {
+  if (!existingItem) {
     const searchItem = document.createElement("li");
     searchItem.textContent = city;
-    searchHistoryElement.appendChild(searchItem);
 
+    if (searchItems.length >= maxSearchHistoryItems) {
+      searchHistoryElement.removeChild(searchItems[0]); // Remove the oldest search
+    }
+
+    searchHistoryElement.appendChild(searchItem);
+    // Add a click event listener to the new search item to re-fetch data
     searchItem.addEventListener("click", function () {
       getWeatherData(city);
     });
-  });
+  }
 }
+
+// Example usage: Call the function with specific city name
+// You can replace "New York" with any other city name you want to query
+getWeatherData("New York");
 
 // Add event listener to the search form
 const searchForm = document.getElementById("search-form");
@@ -92,6 +121,3 @@ searchForm.addEventListener("submit", function (event) {
   const city = document.getElementById("search-input").value;
   getWeatherData(city);
 });
-
-// Call the function to display initial search history when the page loads
-displaySearchHistory();
