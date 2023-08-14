@@ -1,4 +1,5 @@
 const apiKey = "e5528239496e7faee40c0c1dd6ba8b30";
+const maxSearchHistoryItems = 5;
 
 // Function to make the API call and fetch weather data
 function getWeatherData(city) {
@@ -49,15 +50,40 @@ function displayWeatherData(data) {
 
 // Function to add the city to the search history
 function addToSearchHistory(city) {
-  const searchHistoryElement = document.getElementById("search-history");
-  const searchItem = document.createElement("li");
-  searchItem.textContent = city;
-  searchHistoryElement.appendChild(searchItem);
+  const searchHistory = JSON.parse(localStorage.getItem("searchHistory")) || [];
+
+  // Check if the city is already in the search history
+  const existingItem = searchHistory.find(item => item === city);
+
+  if (!existingItem) {
+    searchHistory.push(city);
+
+    if (searchHistory.length > maxSearchHistoryItems) {
+      searchHistory.shift(); // Remove the oldest search
+    }
+
+    localStorage.setItem("searchHistory", JSON.stringify(searchHistory));
+    displaySearchHistory(); // Update the search history UI
+  }
 }
 
-// Example usage: Call the function with specific city name
-// You can replace "New York" with any other city name you want to query
-getWeatherData("New York");
+// Function to display the search history on the page
+function displaySearchHistory() {
+  const searchHistoryElement = document.getElementById("search-history");
+  searchHistoryElement.innerHTML = ""; // Clear previous content
+
+  const searchHistory = JSON.parse(localStorage.getItem("searchHistory")) || [];
+
+  searchHistory.forEach(city => {
+    const searchItem = document.createElement("li");
+    searchItem.textContent = city;
+    searchHistoryElement.appendChild(searchItem);
+
+    searchItem.addEventListener("click", function () {
+      getWeatherData(city);
+    });
+  });
+}
 
 // Add event listener to the search form
 const searchForm = document.getElementById("search-form");
@@ -67,27 +93,5 @@ searchForm.addEventListener("submit", function (event) {
   getWeatherData(city);
 });
 
-const maxSearchHistoryItems = 5;
-
-function addToSearchHistory(city) {
-  const searchHistoryElement = document.getElementById("search-history");
-  const searchItems = searchHistoryElement.querySelectorAll("li");
-
-  // Check if the city is already in the search history
-  const existingItem = Array.from(searchItems).find(item => item.textContent === city);
-
-  if (!existingItem) {
-    const searchItem = document.createElement("li");
-    searchItem.textContent = city;
-
-    if (searchItems.length >= maxSearchHistoryItems) {
-      searchHistoryElement.removeChild(searchItems[0]); // Remove the oldest search
-    }
-
-    searchHistoryElement.appendChild(searchItem);
-    // Add a click event listener to the new search item to re-fetch data
-    searchItem.addEventListener("click", function () {
-      getWeatherData(city);
-    });
-  }
-}
+// Call the function to display initial search history when the page loads
+displaySearchHistory();
